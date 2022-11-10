@@ -14,12 +14,12 @@ static int topbar             = 1;        /* 0 means bottom bar */
 static const unsigned int gappx     = 4;        /* gaps between windows */
 static const char *fonts[]          = { "monospace:size=15" };
 static const char dmenufont[]       = "monospace:size=15";
-static char normbgcolor[]           = "#222222";
-static char normbordercolor[]       = "#444444";
+static char normbgcolor[]           = "#0d0d0d";
+static char normbordercolor[]       = "#fbf1c7";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#005577";
-static char selbgcolor[]            = "#005577";
+static char selbordercolor[]        = "#fabd2f";
+static char selbgcolor[]            = "#fabd2f";
 static char col_gray4[]             = "#0d0d0d";
 static char col_cyan[]              = "#83a598";
 static const char numb_columns[]    = "4"; /*Number of columns for the grid in dmenu*/
@@ -76,7 +76,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \

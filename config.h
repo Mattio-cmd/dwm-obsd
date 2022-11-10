@@ -149,22 +149,95 @@ ResourcePref resources[] = {
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ 0,                       XF86XK_AudioNext, spawn, {.v = nextSong } },
+	{ 0,                       XF86XK_AudioPlay, spawn, {.v = pauseSong } },
+	{ 0,                       XF86XK_AudioPrev, spawn, {.v = prevSong   } },
+
+	{ 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+	{ 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } },
+	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+
+	/*{ 0,                       XF86XK_AudioNext, spawn, {.v = next_Notif } },*/
+	/*{ 0,                       XF86XK_AudioPlay, spawn, {.v = pause_Notif } },*/
+	/*{ 0,                       XF86XK_AudioPrev, spawn, {.v = prev_Notif  } },*/
+
+	{ 0,                       XF86XK_AudioLowerVolume, spawn, {.v = get_vol } },
+	{ 0,                       XF86XK_AudioMute,        spawn, {.v = get_vol } },
+	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = get_vol   } },
+
+  // For mpv song status
+	{ 0,                       XF86XK_AudioNext, spawn, {.v = pauseSong2 } },
+	{ 0,                       XF86XK_AudioPlay, spawn, {.v = pauseSong2 } },
+	{ 0,                       XF86XK_AudioPrev, spawn, {.v = pauseSong2   } },
+
+	{ 0,                       XK_F6,        spawn, {.v = get_vol } },
+	{ 0,                       XK_F6,        spawn, {.v = mutevol } },
+
+	{ 0,                       XK_F7,        spawn, {.v = mpd_volume } },
+	{ 0,                       XK_F7,        spawn, {.v = mpd_volume_down } },
+
+	{ 0,                       XK_F8,        spawn, {.v = mpd_volume } },
+	{ 0,                       XK_F8,        spawn, {.v = mpd_volume_up } },
+
+	{ 0,                       XK_F10,        spawn, {.v = pauseSong } },
+	{ 0,                       XK_F10,        spawn, {.v = pauseSong2 } },
+	{ 0,                       XK_F9,         spawn, {.v = prevSong } },
+	{ 0,                       XK_F11,        spawn, {.v = nextSong } },
+
+
+	{ MODKEY,                       XK_space,  spawn,          {.v = keyboar_lay } },
+
+	/*Custom keybinds for spawning apps*/
+	{ MODKEY,                       XK_q,  spawn,          		 {.v = lightmd } },
+	{ MODKEY,                       XK_e,  spawn,          		 {.v = nvimcmd } },
+	{ MODKEY,                       XK_n,  spawn,          		 {.v = nvidia } },
+	{ MODKEY,                       XK_q,  spawn,          		 {.v = planner } },
+	{ MODKEY,                       XK_a,  spawn,          		 {.v = eww_opensidecard } },
+	{ MODKEY,                       XK_space,  spawn,      		 {.v = eww_opendashboard } },
+	{ MODKEY|ShiftMask,             XK_s,  spawn,          		 {.v = steamcmd } },
+	{ MODKEY,                       XK_q,  spawn,          		 {.v = plans } },
+	{ MODKEY|ShiftMask,             XK_z,  spawn,          		 {.v = kill_eww} },
+
+	{ MODKEY,                       XK_z,  spawn,          		 {.v = control_center } },
+	//{ MODKEY|ShiftMask,             XK_z,  spawn,          		 {.v = dunst_closea } },
+
+
+	{ MODKEY,                       XK_g,  spawn,          		 {.v = gzdoom } },
+	{ MODKEY|ShiftMask,             XK_Tab,  spawn,          	 {.v = passmenu } },
+	{ MODKEY,                       XK_n,  spawn,          		 {.v = dmenu_networkmd } },
+	{ MODKEY,                       XK_x,  spawn,         		 {.v = killxorgmd } },
+  { MODKEY|ShiftMask,             XK_p,  spawn,          	   {.v = slockmd } },
+  { MODKEY,                       XK_s,  spawn,          	   {.v = screenshotmd } },
+
+	{ MODKEY|ShiftMask,             XK_a,  spawn,              {.v = signalmd } },
+	{ MODKEY,                       XK_o,  spawn,         	   {.v = obsmd } },
+	{ MODKEY,                       XK_v,  spawn,          		 {.v = virtmanager } },
+	{ MODKEY,              					XK_c,  spawn,          		 {.v = cmuscmd } },
+  { MODKEY,                       XK_r,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = greek } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+  { MODKEY,                       XK_p,      spawn,          {.v = librewmd } },
+  { MODKEY,                       XK_t,      spawn,          {.v = pcmanfmmd } },
+  { MODKEY,                       XK_i,      spawn,          {.v = libreofficemd } },
+  { MODKEY,                       XK_d,      spawn,          {.v = discord } },
+
+	/*Movement keys*/
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,             XK_h,      incnmaster,     {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_l,      incnmaster,     {.i = -1 } },
+	{ MODKEY,			                  XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY,					              XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
+/*	{ MODKEY,                     XK_alt,    view,           {0} },*/
+	{ MODKEY,                       XK_w,      killclient,     {0} },
+
+	/*For layouts*/
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_Tab,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -172,6 +245,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	/*For incrementing gaps n stuff*/
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },

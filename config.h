@@ -1,26 +1,38 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
+static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
+static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int gappx     = 5;        /* gaps between windows */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+static unsigned int borderpx  = 2;        /* border pixel of windows */
+static unsigned int snap      = 32;       /* snap pixel */
+static int showbar            = 1;        /* 0 means no bar */
+static int topbar             = 1;        /* 0 means bottom bar */
+static const unsigned int gappx     = 4;        /* gaps between windows */
+static const char *fonts[]          = { "monospace:size=15" };
+static const char dmenufont[]       = "monospace:size=15";
+static char normbgcolor[]           = "#222222";
+static char normbordercolor[]       = "#444444";
+static char normfgcolor[]           = "#bbbbbb";
+static char selfgcolor[]            = "#eeeeee";
+static char selbordercolor[]        = "#005577";
+static char selbgcolor[]            = "#005577";
+static char col_gray4[]             = "#0d0d0d";
+static char col_cyan[]              = "#83a598";
+static const char numb_columns[]    = "4"; /*Number of columns for the grid in dmenu*/
+static const char numb_lines[]      = "4"; /*Number of lines for the grid in dmenu*/
+
+static char *colors[][3] = {
+       /*               fg           bg           border   */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { " " , " ", " ", "ﭮ ", " ", " ", " ", " ", " "};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -29,20 +41,38 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "firefox",  NULL,   NULL,           1 << 0,    0,             0,          -1,        -1 },
+	{ "St",		    NULL,   NULL,           0,         0,             1,           0,        -1 },
+	{ "Alacritty", NULL,  NULL,           0,         0,             1,           0,        -1 },
+	{ NULL,		    NULL,   "Event Tester", 0,         0,             0,           1,        -1 }, /* xev */
+	{ "Lutris",   NULL,   NULL,         1 << 1,      0,             0,           0,        -1 },
+	{ "discord",  NULL,   NULL,         1 << 3,      0,		          0,           0,        -1 },
+	{ "War Thunder (Vulkan, 64bit)",  NULL,   NULL,         1 << 5,      0,		          0,           0,        -1 },
+	{ "Steam",    NULL,   NULL,         1 << 5,      0,	            0,           0,        -1 },
+	{ "obs",      NULL,   NULL,         1 << 8,      0,		          0,           0,        -1 },
+	{ "Brave",    NULL,   NULL,         1 << 0,      0,             0,           0,        -1 },
+	{ "librewolf",    NULL,   NULL,         1 << 0,      0,             0,           0,        -1 },
+	{ "LibreWolf", NULL,  NULL,         1 << 0,      0,             0,           0,        -1 },
+	{ "GZDoom",    NULL,  NULL,         1 << 1,      0,             0,           0,        -1 },
+	{ NULL, NULL, "Virtual Machine Manager",         1 << 7,      0,             0,           0,        -1 },
+	{ "Signal",   NULL,   NULL,         1 << 6,      0,             0,           0,        -1 },
+  { "ncmpcpp",     NULL,   NULL,         1 << 4,      0,             0,           0,        -1 },
+  { "libreoffice", NULL, NULL,        1 << 2,      0,             0,           0,        -1 },
+  { "Planner", NULL, NULL,        1 << 2,      0,             0,           0,        -1 },
+  { "Heroic Games Launcher", NULL, NULL, 1 << 1,   0,             0,           0,        -1 },
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static int nmaster     = 1;    /* number of clients in master area */
+static int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
+  { "[M]",      monocle },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
 };
 
 /* key definitions */
@@ -58,8 +88,64 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *eww_opensidecard[]  = { "eww_opensidecard", NULL };
+static const char *eww_opendashboard[] = { "eww_opendashboard.sh", NULL };
+static const char *librewmd[]         = { "librewolf", NULL };
+static const char *pcmanfmmd[]        = { "pcmanfm", NULL };
+static const char *libreofficemd[]    = { "libreoffice", "--nologo", NULL };
+static const char *screenshotmd[]     = { "xfce4-screenshooter", NULL };
+static const char *obsmd[]            = { "obs", NULL };
+static const char *virtmanager[]      = { "virt-manager", NULL };
+static const char *slockmd[]          = { "slock", NULL };
+static const char *steam[]            = { "steam", NULL };
+static const char *keyboar_lay[]      = { "layout_changer.sh", NULL };
+static const char *gzdoom[]           = { "gzdoom", NULL };
+static const char *discord[]          = { "discord_start.sh", NULL };
+static const char *passmenu[]         = { "passmenu", NULL };
+static const char *nvimcmd[]          = { "st", "-e", "nvim", NULL };
+static const char *signalmd[]         = { "signal-desktop", NULL };
+static const char *greek[]            = { "greekleters.sh", NULL };
+static const char *plans[]            = { "zathura", "~/Documents/lista/test.pdf", NULL };
+static const char *get_vol[]          = { "get-volume.sh", NULL };
+static const char *next_Notif         = { "notify-send", NULL };
+
+static const char *dunst_closea[]     = { "dunstctl", "close-all", NULL };
+static const char *dunst_hist[]       = { "dunstctl", "history-pop", NULL };
+
+static const char *kill_eww[]       = { "killall", "eww", NULL };
+
+static const char *control_center[]   = { "eww_not_center.sh", NULL };
+
+static const char *nextSong[]         = { "mpc", "next", NULL };
+static const char *pauseSong[]        = { "mpc", "toggle", NULL };
+static const char *prevSong[]         = { "mpc", "prev", NULL };
+
+static const char *mpd_volume[]       = { "mpd-volume.sh", NULL };
+static const char *mpd_volume_up[]    = { "mpc", "volume", "+5", NULL };
+static const char *mpd_volume_down[]  = { "mpc", "volume", "-5", NULL };
+
+static const char *pauseSong2[]       = { "pause_song.sh", NULL };
+
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+		{ "normbgcolor",        STRING,  &normbgcolor },
+		{ "normbordercolor",    STRING,  &normbordercolor },
+		{ "normfgcolor",        STRING,  &normfgcolor },
+		{ "selbgcolor",         STRING,  &selbgcolor },
+		{ "selbordercolor",     STRING,  &selbordercolor },
+		{ "selfgcolor",         STRING,  &selfgcolor },
+		{ "borderpx",          	INTEGER, &borderpx },
+		{ "snap",          		INTEGER, &snap },
+		{ "showbar",          	INTEGER, &showbar },
+		{ "topbar",          	INTEGER, &topbar },
+		{ "nmaster",          	INTEGER, &nmaster },
+		{ "resizehints",       	INTEGER, &resizehints },
+		{ "mfact",      	 	FLOAT,   &mfact },
+};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -76,8 +162,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
